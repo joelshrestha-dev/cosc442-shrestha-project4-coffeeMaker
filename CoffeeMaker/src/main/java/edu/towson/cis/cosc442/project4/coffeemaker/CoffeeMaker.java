@@ -47,6 +47,7 @@ public class CoffeeMaker {
                 if (!recipeFull[i]) {
                     emptySpot = i;
                     canAddRecipe = true;
+                    break; // changed to add the new recipe to the first empty spot found
                 }
             }
             if (emptySpot != -1) {
