@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class RecipeTest {
     @Test
     void testEquals() {
-        
+
     }
 
     @Test
