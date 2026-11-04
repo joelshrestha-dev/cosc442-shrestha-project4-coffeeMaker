@@ -112,6 +112,14 @@ public class InventoryTest {
     }
 
     @Test
+    void testSetChocolateZero() {
+        // act
+        inventory.setChocolate(0);
+        // assert
+        assertEquals(0, inventory.getChocolate());
+    }
+
+    @Test
     void testSetCoffee() {
         // act
         inventory.setCoffee(20);
@@ -123,6 +131,14 @@ public class InventoryTest {
     void testSetCoffeeNegative() {
         // act
         inventory.setCoffee(-5);
+        // assert
+        assertEquals(0, inventory.getCoffee());
+    }
+
+    @Test
+    void testSetCoffeeZero() {
+        // act
+        inventory.setCoffee(0);
         // assert
         assertEquals(0, inventory.getCoffee());
     }
@@ -144,11 +160,27 @@ public class InventoryTest {
     }
 
     @Test
+    void testSetMilkZero() {
+        // act
+        inventory.setMilk(0);
+        // assert
+        assertEquals(0, inventory.getMilk());
+    }
+
+    @Test
     void testSetSugar() {
         // act
         inventory.setSugar(20);
         // assert
         assertEquals(20, inventory.getSugar());
+    }
+
+    @Test
+    void testSetSugarZero() {
+        // act
+        inventory.setSugar(0);
+        // assert
+        assertEquals(0, inventory.getSugar());
     }
 
     @Test
