@@ -22,10 +22,10 @@ jobs:
           cache: maven
 
       - name: Run JUnit regression tests
-        run: mvn --batch-mode test
+        run: ./mvnw --batch-mode test
 
       - name: Run PIT mutation testing
-        run: mvn --batch-mode test-compile org.pitest:pitest-maven:mutationCoverage
+        run: ./mvnw --batch-mode test-compile org.pitest:pitest-maven:mutationCoverage
 
       - name: Upload PIT report
         if: always()
