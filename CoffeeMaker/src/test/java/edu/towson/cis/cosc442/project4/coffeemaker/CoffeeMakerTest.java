@@ -15,6 +15,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class CoffeeMakerTest {
 
     CoffeeMaker coffeeMaker;
+    int initialCoffee;
+    int initialMilk;
+    int initialSugar;
+    int initialChocolate;
 
     @BeforeEach // arrange
     void setUp() {
@@ -22,11 +26,20 @@ public class CoffeeMakerTest {
         for(Recipe recipe : coffeeMaker.getRecipes()) {
             coffeeMaker.deleteRecipe(recipe);
         }
+        initialCoffee = coffeeMaker.checkInventory().getCoffee();
+        initialMilk = coffeeMaker.checkInventory().getMilk();
+        initialSugar = coffeeMaker.checkInventory().getSugar();
+        initialChocolate = coffeeMaker.checkInventory().getChocolate();
+
     }
 
     @AfterEach
     void tearDown() {
         coffeeMaker = null;
+        initialCoffee = 0;
+        initialMilk = 0;
+        initialSugar = 0;
+        initialChocolate = 0;
     }
 
     @ParameterizedTest
@@ -36,12 +49,13 @@ public class CoffeeMakerTest {
     })
     void testAddInventoryPasses(int coffee, int milk, int sugar, int chocolate) {
         // act
-        coffeeMaker.addInventory(coffee, milk, sugar, chocolate);
+        boolean result = coffeeMaker.addInventory(coffee, milk, sugar, chocolate);
         // assert
-        assertTrue(coffeeMaker.checkInventory().getCoffee() >= coffee);
-        assertTrue(coffeeMaker.checkInventory().getMilk() >= milk);
-        assertTrue(coffeeMaker.checkInventory().getSugar() >= sugar);
-        assertTrue(coffeeMaker.checkInventory().getChocolate() >= chocolate);
+        assertTrue(coffeeMaker.checkInventory().getCoffee() == initialCoffee + coffee);
+        assertTrue(coffeeMaker.checkInventory().getMilk() == initialMilk + milk);
+        assertTrue(coffeeMaker.checkInventory().getSugar() == initialSugar + sugar);
+        assertTrue(coffeeMaker.checkInventory().getChocolate() == initialChocolate + chocolate);
+        assertTrue(result);
     }
 
     @ParameterizedTest
@@ -58,6 +72,22 @@ public class CoffeeMakerTest {
         assertFalse(result);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "0,0,0,0",
+        "1,1,1,1"
+    })
+    void testAddInventoryZero(int coffee, int milk, int sugar, int chocolate) {
+        // act
+        boolean result = coffeeMaker.addInventory(coffee, milk, sugar, chocolate);
+        // assert
+        assertTrue(result);
+        assertTrue(coffeeMaker.checkInventory().getCoffee() == initialCoffee + coffee);
+        assertTrue(coffeeMaker.checkInventory().getMilk() == initialMilk + milk);
+        assertTrue(coffeeMaker.checkInventory().getSugar() == initialSugar + sugar);
+        assertTrue(coffeeMaker.checkInventory().getChocolate() == initialChocolate + chocolate);
+    }
+    
     @Test
     void testAddRecipe() {
         // act
@@ -192,11 +222,28 @@ public class CoffeeMakerTest {
         recipe.setAmtMilk(1);
         recipe.setAmtSugar(1);
         recipe.setAmtChocolate(1);
+        
         coffeeMaker.addRecipe(recipe);
-        int initialPrice = recipe.getPrice();
-        recipe.setPrice(100);
+
+        Recipe alteredRecipe = new Recipe();
+        alteredRecipe.setName("test");
+        alteredRecipe.setPrice(100);
+        alteredRecipe.setAmtCoffee(2);
+        alteredRecipe.setAmtMilk(2);
+        alteredRecipe.setAmtSugar(2);
+        alteredRecipe.setAmtChocolate(2);
+
+        boolean result = coffeeMaker.editRecipe(recipe, alteredRecipe);
+        if(result) System.out.println("Recipe edited successfully.");
+        else System.out.println("Failed to edit recipe.");
+        Recipe stored = coffeeMaker.getRecipeForName("test");
         // assert
-        assertTrue(recipe.getPrice() != initialPrice);
+        assertTrue(result);
+        assertEquals(stored.getPrice(), 100);
+        assertEquals(stored.getAmtCoffee(), 2);
+        assertEquals(stored.getAmtMilk(), 2);
+        assertEquals(stored.getAmtSugar(), 2);
+        assertEquals(stored.getAmtChocolate(), 2);
     }
 
     @Test
@@ -210,9 +257,11 @@ public class CoffeeMakerTest {
         recipe.setAmtSugar(1);
         recipe.setAmtChocolate(1);
         int initialPrice = recipe.getPrice();
-        recipe.setPrice(100);
+        
+        coffeeMaker.addRecipe(recipe);
         // assert
-        assertTrue(recipe.getPrice() != initialPrice);
+        boolean result = coffeeMaker.editRecipe(recipe, new Recipe());
+        assertFalse(result);
     }
 
     @Test
@@ -344,12 +393,18 @@ public class CoffeeMakerTest {
         recipe.setAmtMilk(1);
         recipe.setAmtSugar(1);
         recipe.setAmtChocolate(1);
-        coffeeMaker.addRecipe(recipe);
+        boolean result = coffeeMaker.addRecipe(recipe);
 
         int change = coffeeMaker.makeCoffee(recipe, payment);
 
         // assert
         assertEquals(payment - recipe.getPrice(), change);
+        assertTrue(result);
+        assertTrue(coffeeMaker.checkInventory().getCoffee() == initialCoffee - recipe.getAmtCoffee());
+        assertTrue(coffeeMaker.checkInventory().getMilk() == initialMilk - recipe.getAmtMilk());
+        assertTrue(coffeeMaker.checkInventory().getSugar() == initialSugar - recipe.getAmtSugar());
+        assertTrue(coffeeMaker.checkInventory().getChocolate() == initialChocolate - recipe.getAmtChocolate());
+
     }
 
     @ParameterizedTest
