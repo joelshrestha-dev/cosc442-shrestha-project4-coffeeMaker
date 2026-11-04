@@ -1,7 +1,6 @@
 package edu.towson.cis.cosc442.project4.coffeemaker;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,7 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@Disabled("Temporarily disabled for mutation testing exercise")
 public class CoffeeMakerTest {
 
     CoffeeMaker coffeeMaker;
